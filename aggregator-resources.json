@@ -46,6 +46,7 @@
             }
         ]
     },
+    "description": "Dashboard showing memory usage and restart metrics for aggregator containers across namespaces",
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
@@ -353,7 +354,7 @@
     ],
     "refresh": "1m",
     "schemaVersion": 40,
-    "tags": [],
+    "tags": ["kubernetes", "kubecost", "aggregator", "memory", "restarts"],
     "templating": {
         "list": [
             {
@@ -383,8 +384,8 @@
     },
     "timepicker": {},
     "timezone": "browser",
-    "title": "aggregator resources",
-    "uid": "aeizco3qortvkb",
-    "version": 4,
+    "title": "Aggregator Resources",
+    "uid": "aggregator-resources-jesse",
+    "version": 1,
     "weekStart": ""
 }
