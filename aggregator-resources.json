@@ -1,35 +1,4 @@
 {
-    "__inputs": [
-        {
-            "name": "DS_PROMETHEUS",
-            "label": "Prometheus",
-            "description": "",
-            "type": "datasource",
-            "pluginId": "prometheus",
-            "pluginName": "Prometheus"
-        }
-    ],
-    "__elements": {},
-    "__requires": [
-        {
-            "type": "grafana",
-            "id": "grafana",
-            "name": "Grafana",
-            "version": "11.5.2"
-        },
-        {
-            "type": "datasource",
-            "id": "prometheus",
-            "name": "Prometheus",
-            "version": "1.0.0"
-        },
-        {
-            "type": "panel",
-            "id": "timeseries",
-            "name": "Time series",
-            "version": ""
-        }
-    ],
     "annotations": {
         "list": [
             {
@@ -50,13 +19,13 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": null,
+    "id": 88,
     "links": [],
     "panels": [
         {
             "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${datasource}"
             },
             "fieldConfig": {
                 "defaults": {
@@ -104,8 +73,7 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "red",
@@ -162,12 +130,12 @@
                     "sort": "none"
                 }
             },
-            "pluginVersion": "11.5.2",
+            "pluginVersion": "11.6.0",
             "targets": [
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
+                        "uid": "${datasource}"
                     },
                     "disableTextWrap": false,
                     "editorMode": "code",
@@ -185,7 +153,7 @@
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
+                        "uid": "${datasource}"
                     },
                     "editorMode": "code",
                     "exemplar": false,
@@ -204,7 +172,7 @@
         {
             "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "${datasource}"
             },
             "fieldConfig": {
                 "defaults": {
@@ -254,8 +222,7 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green",
-                                "value": null
+                                "color": "green"
                             },
                             {
                                 "color": "red",
@@ -312,12 +279,12 @@
                     "sort": "none"
                 }
             },
-            "pluginVersion": "11.5.2",
+            "pluginVersion": "11.6.0",
             "targets": [
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
+                        "uid": "${datasource}"
                     },
                     "disableTextWrap": false,
                     "editorMode": "code",
@@ -335,7 +302,7 @@
                 {
                     "datasource": {
                         "type": "prometheus",
-                        "uid": "${DS_PROMETHEUS}"
+                        "uid": "${datasource}"
                     },
                     "editorMode": "code",
                     "exemplar": false,
@@ -352,14 +319,39 @@
             "type": "timeseries"
         }
     ],
+    "preload": false,
     "refresh": "1m",
-    "schemaVersion": 40,
-    "tags": ["kubernetes", "kubecost", "aggregator", "memory", "restarts"],
+    "schemaVersion": 41,
+    "tags": [
+        "kubernetes",
+        "kubecost",
+        "aggregator",
+        "memory",
+        "restarts"
+    ],
     "templating": {
         "list": [
             {
                 "allowCustomValue": false,
-                "current": {},
+                "current": {
+                    "text": "Prometheus",
+                    "value": "prometheus"
+                },
+                "name": "datasource",
+                "options": [],
+                "query": "prometheus",
+                "refresh": 1,
+                "regex": "",
+                "type": "datasource"
+            },
+            {
+                "allowCustomValue": false,
+                "current": {
+                    "text": "All",
+                    "value": [
+                        "$__all"
+                    ]
+                },
                 "definition": "label_values(container_memory_working_set_bytes,namespace)",
                 "description": "",
                 "includeAll": true,
@@ -384,8 +376,7 @@
     },
     "timepicker": {},
     "timezone": "browser",
-    "title": "Aggregator Resources",
-    "uid": "aggregator-resources-jesse",
-    "version": 1,
-    "weekStart": ""
+    "title": "Aggregator Resources2",
+    "uid": "aggregator-resources-jesse2",
+    "version": 2
 }
