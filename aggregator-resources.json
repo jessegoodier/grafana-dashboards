@@ -335,7 +335,7 @@
                 "allowCustomValue": false,
                 "current": {
                     "text": "Prometheus",
-                    "value": "prometheus"
+                    "value": "${datasource}"
                 },
                 "name": "datasource",
                 "options": [],
