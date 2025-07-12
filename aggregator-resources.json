@@ -19,9 +19,23 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 88,
+    "id": 1267,
     "links": [],
     "panels": [
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 3,
+            "panels": [],
+            "repeat": "namespace",
+            "title": "$namespace",
+            "type": "row"
+        },
         {
             "datasource": {
                 "type": "prometheus",
@@ -101,16 +115,28 @@
                             {
                                 "id": "unit",
                                 "value": "none"
+                            },
+                            {
+                                "id": "custom.barWidthFactor",
+                                "value": 0.2
+                            },
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 100
+                            },
+                            {
+                                "id": "custom.axisSoftMin",
+                                "value": 0
                             }
                         ]
                     }
                 ]
             },
             "gridPos": {
-                "h": 12,
-                "w": 24,
+                "h": 10,
+                "w": 12,
                 "x": 0,
-                "y": 0
+                "y": 1
             },
             "id": 1,
             "options": {
@@ -120,7 +146,7 @@
                     ],
                     "displayMode": "table",
                     "placement": "right",
-                    "showLegend": true,
+                    "showLegend": false,
                     "sortBy": "Max",
                     "sortDesc": true
                 },
@@ -157,7 +183,7 @@
                     },
                     "editorMode": "code",
                     "exemplar": false,
-                    "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {container=~\"aggregator\"}[1h])) \n>0",
+                    "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\",container=~\"aggregator\"}[1h])) \n>0",
                     "hide": false,
                     "instant": false,
                     "interval": "1h",
@@ -250,16 +276,28 @@
                             {
                                 "id": "unit",
                                 "value": "none"
+                            },
+                            {
+                                "id": "custom.barWidthFactor",
+                                "value": 0.2
+                            },
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 100
+                            },
+                            {
+                                "id": "custom.axisSoftMin",
+                                "value": 0
                             }
                         ]
                     }
                 ]
             },
             "gridPos": {
-                "h": 12,
-                "w": 24,
-                "x": 0,
-                "y": 12
+                "h": 10,
+                "w": 12,
+                "x": 12,
+                "y": 1
             },
             "id": 2,
             "options": {
@@ -269,7 +307,7 @@
                     ],
                     "displayMode": "table",
                     "placement": "right",
-                    "showLegend": true,
+                    "showLegend": false,
                     "sortBy": "Max",
                     "sortDesc": true
                 },
@@ -352,7 +390,7 @@
                         "$__all"
                     ]
                 },
-                "definition": "label_values(container_memory_working_set_bytes,namespace)",
+                "definition": "label_values(container_memory_working_set_bytes{container=\"aggregator\"},namespace)",
                 "description": "",
                 "includeAll": true,
                 "multi": true,
@@ -360,7 +398,7 @@
                 "options": [],
                 "query": {
                     "qryType": 1,
-                    "query": "label_values(container_memory_working_set_bytes,namespace)",
+                    "query": "label_values(container_memory_working_set_bytes{container=\"aggregator\"},namespace)",
                     "refId": "PrometheusVariableQueryEditor-VariableQuery"
                 },
                 "refresh": 1,
@@ -378,5 +416,5 @@
     "timezone": "browser",
     "title": "Aggregator Resources",
     "uid": "aggregator-resources-jesse",
-    "version": 2
+    "version": 3
 }
