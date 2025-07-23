@@ -19,7 +19,7 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 1267,
+    "id": 95,
     "links": [],
     "panels": [
         {
@@ -32,7 +32,6 @@
             },
             "id": 3,
             "panels": [],
-            "repeat": "namespace",
             "title": "$namespace",
             "type": "row"
         },
@@ -134,7 +133,7 @@
             },
             "gridPos": {
                 "h": 10,
-                "w": 12,
+                "w": 24,
                 "x": 0,
                 "y": 1
             },
@@ -146,7 +145,7 @@
                     ],
                     "displayMode": "table",
                     "placement": "right",
-                    "showLegend": false,
+                    "showLegend": true,
                     "sortBy": "Max",
                     "sortDesc": true
                 },
@@ -156,7 +155,7 @@
                     "sort": "none"
                 }
             },
-            "pluginVersion": "11.6.0",
+            "pluginVersion": "12.0.2",
             "targets": [
                 {
                     "datasource": {
@@ -294,10 +293,10 @@
                 ]
             },
             "gridPos": {
-                "h": 10,
-                "w": 12,
-                "x": 12,
-                "y": 1
+                "h": 9,
+                "w": 24,
+                "x": 0,
+                "y": 11
             },
             "id": 2,
             "options": {
@@ -307,7 +306,7 @@
                     ],
                     "displayMode": "table",
                     "placement": "right",
-                    "showLegend": false,
+                    "showLegend": true,
                     "sortBy": "Max",
                     "sortDesc": true
                 },
@@ -317,7 +316,7 @@
                     "sort": "none"
                 }
             },
-            "pluginVersion": "11.6.0",
+            "pluginVersion": "12.0.2",
             "targets": [
                 {
                     "datasource": {
@@ -409,12 +408,12 @@
         ]
     },
     "time": {
-        "from": "now-24h",
+        "from": "now-5d",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
     "title": "Aggregator Resources",
     "uid": "aggregator-resources-jesse",
-    "version": 3
+    "version": 4
 }
