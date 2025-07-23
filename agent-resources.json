@@ -1,0 +1,423 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "description": "Dashboard showing memory usage and restart metrics for aggregator containers across namespaces",
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 50,
+    "links": [],
+    "panels": [
+        {
+            "collapsed": false,
+            "gridPos": {
+                "h": 1,
+                "w": 24,
+                "x": 0,
+                "y": 0
+            },
+            "id": 3,
+            "panels": [],
+            "title": "agent resources",
+            "type": "row"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": 3600000,
+                        "lineInterpolation": "linear",
+                        "lineStyle": {
+                            "fill": "solid"
+                        },
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "never",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green"
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "bytes"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byFrameRefID",
+                            "options": "restarts"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.drawStyle",
+                                "value": "bars"
+                            },
+                            {
+                                "id": "custom.axisPlacement",
+                                "value": "right"
+                            },
+                            {
+                                "id": "unit",
+                                "value": "none"
+                            },
+                            {
+                                "id": "custom.barWidthFactor",
+                                "value": 0.2
+                            },
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 100
+                            },
+                            {
+                                "id": "custom.axisSoftMin",
+                                "value": 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 10,
+                "w": 24,
+                "x": 0,
+                "y": 1
+            },
+            "id": 1,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "hideZeros": false,
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${datasource}"
+                    },
+                    "disableTextWrap": false,
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "max by(namespace) \n  (max_over_time\n    (container_memory_working_set_bytes\n      {\n        namespace=~\"$namespace\", image!=\"\",\n        container!=\"\",\n        container!=\"kc-infra-costmanagement-agent-network-costs\",\n        pod!=\"\"\n      }[10m]\n    )\n  )",
+                    "fullMetaSearch": false,
+                    "includeNullMetadata": true,
+                    "instant": false,
+                    "interval": "10m",
+                    "legendFormat": "{{namespace}}",
+                    "range": true,
+                    "refId": "memory",
+                    "useBackend": false
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${datasource}"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\"}[1h])) \n>0",
+                    "hide": false,
+                    "instant": false,
+                    "interval": "1h",
+                    "legendFormat": "{{namespace}} restarts",
+                    "range": true,
+                    "refId": "restarts"
+                }
+            ],
+            "title": "Namespace Memory Usage",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": 3600000,
+                        "lineInterpolation": "linear",
+                        "lineStyle": {
+                            "fill": "solid"
+                        },
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "never",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "decimals": 1,
+                    "mappings": [],
+                    "min": 0,
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green"
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "none"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byFrameRefID",
+                            "options": "restarts"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.drawStyle",
+                                "value": "bars"
+                            },
+                            {
+                                "id": "custom.axisPlacement",
+                                "value": "right"
+                            },
+                            {
+                                "id": "unit",
+                                "value": "none"
+                            },
+                            {
+                                "id": "custom.barWidthFactor",
+                                "value": 0.2
+                            },
+                            {
+                                "id": "custom.fillOpacity",
+                                "value": 100
+                            },
+                            {
+                                "id": "custom.axisSoftMin",
+                                "value": 0
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 9,
+                "w": 24,
+                "x": 0,
+                "y": 11
+            },
+            "id": 2,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "max"
+                    ],
+                    "displayMode": "table",
+                    "placement": "right",
+                    "showLegend": true,
+                    "sortBy": "Max",
+                    "sortDesc": true
+                },
+                "tooltip": {
+                    "hideZeros": false,
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "12.0.2",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${datasource}"
+                    },
+                    "disableTextWrap": false,
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "max by(namespace) (\n  max_over_time(\n    rate(container_cpu_usage_seconds_total{\n      namespace=~\"$namespace\", \n      image!=\"\", \n      container!=\"\",\n      container!=\"kc-infra-costmanagement-agent-network-costs\",\n      pod!=\"\"\n    }[5m])[10m:]\n  )\n)\n",
+                    "fullMetaSearch": false,
+                    "includeNullMetadata": true,
+                    "instant": false,
+                    "interval": "10m",
+                    "legendFormat": "{{namespace}}",
+                    "range": true,
+                    "refId": "memory",
+                    "useBackend": false
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "${datasource}"
+                    },
+                    "editorMode": "code",
+                    "exemplar": false,
+                    "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\"}[1h])) \n>0",
+                    "hide": false,
+                    "instant": false,
+                    "interval": "1h",
+                    "legendFormat": "{{namespace}} restarts",
+                    "range": true,
+                    "refId": "restarts"
+                }
+            ],
+            "title": "Namespace CPU Usage",
+            "type": "timeseries"
+        }
+    ],
+    "preload": false,
+    "refresh": "1m",
+    "schemaVersion": 41,
+    "tags": [
+        "kubernetes",
+        "kubecost",
+        "aggregator",
+        "memory",
+        "restarts"
+    ],
+    "templating": {
+        "list": [
+            {
+                "allowCustomValue": false,
+                "current": {
+                    "text": "Prometheus",
+                    "value": "prometheus"
+                },
+                "name": "datasource",
+                "options": [],
+                "query": "prometheus",
+                "refresh": 1,
+                "regex": "",
+                "type": "datasource"
+            },
+            {
+                "allowCustomValue": false,
+                "current": {
+                    "text": [
+                        "ibm-finops-agent",
+                        "infra-costmanagement"
+                    ],
+                    "value": [
+                        "ibm-finops-agent",
+                        "infra-costmanagement"
+                    ]
+                },
+                "definition": "label_values(container_memory_working_set_bytes,namespace)",
+                "description": "",
+                "includeAll": true,
+                "multi": true,
+                "name": "namespace",
+                "options": [],
+                "query": {
+                    "qryType": 1,
+                    "query": "label_values(container_memory_working_set_bytes,namespace)",
+                    "refId": "PrometheusVariableQueryEditor-VariableQuery"
+                },
+                "refresh": 1,
+                "regex": "",
+                "sort": 5,
+                "type": "query"
+            }
+        ]
+    },
+    "time": {
+        "from": "now-7d",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "agent resources",
+    "uid": "agent-resources-jesse-1",
+    "version": 3
+}
