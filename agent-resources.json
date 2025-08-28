@@ -329,7 +329,7 @@
             "options": {
                 "legend": {
                     "calcs": [
-                        "max"
+                        "mean"
                     ],
                     "displayMode": "table",
                     "placement": "right",
