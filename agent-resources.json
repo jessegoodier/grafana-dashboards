@@ -19,7 +19,7 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 50,
+    "id": 1,
     "links": [],
     "panels": [
         {
@@ -86,7 +86,8 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": 0
                             },
                             {
                                 "color": "red",
@@ -128,6 +129,31 @@
                                 "value": 0
                             }
                         ]
+                    },
+                    {
+                        "__systemRef": "hideSeriesFrom",
+                        "matcher": {
+                            "id": "byNames",
+                            "options": {
+                                "mode": "exclude",
+                                "names": [
+                                    "ibm-finops-agent",
+                                    "infra-costmanagement"
+                                ],
+                                "prefix": "All except:",
+                                "readOnly": true
+                            }
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.hideFrom",
+                                "value": {
+                                    "legend": false,
+                                    "tooltip": false,
+                                    "viz": true
+                                }
+                            }
+                        ]
                     }
                 ]
             },
@@ -146,8 +172,8 @@
                     "displayMode": "table",
                     "placement": "right",
                     "showLegend": true,
-                    "sortBy": "Max",
-                    "sortDesc": true
+                    "sortBy": "Name",
+                    "sortDesc": false
                 },
                 "tooltip": {
                     "hideZeros": false,
@@ -155,7 +181,7 @@
                     "sort": "none"
                 }
             },
-            "pluginVersion": "12.0.2",
+            "pluginVersion": "12.1.0",
             "targets": [
                 {
                     "datasource": {
@@ -165,11 +191,11 @@
                     "disableTextWrap": false,
                     "editorMode": "code",
                     "exemplar": false,
-                    "expr": "max by(namespace) \n  (max_over_time\n    (container_memory_working_set_bytes\n      {\n        namespace=~\"$namespace\", image!=\"\",\n        container!=\"\",\n        container!=\"kc-infra-costmanagement-agent-network-costs\",\n        pod!=\"\"\n      }[10m]\n    )\n  )",
+                    "expr": "max_over_time(\n  (\n    sum by(namespace) (\n      container_memory_working_set_bytes{\n        namespace=~\"$namespace\",\n        image!=\"\",\n        container!=\"\",\n        container!~\".*network.*\",\n        pod!=\"\"\n      }\n    )\n  )[$__interval:]\n)\n",
                     "fullMetaSearch": false,
                     "includeNullMetadata": true,
                     "instant": false,
-                    "interval": "10m",
+                    "interval": "",
                     "legendFormat": "{{namespace}}",
                     "range": true,
                     "refId": "memory",
@@ -183,7 +209,7 @@
                     "editorMode": "code",
                     "exemplar": false,
                     "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\"}[1h])) \n>0",
-                    "hide": false,
+                    "hide": true,
                     "instant": false,
                     "interval": "1h",
                     "legendFormat": "{{namespace}} restarts",
@@ -240,14 +266,15 @@
                             "mode": "off"
                         }
                     },
-                    "decimals": 1,
+                    "decimals": 3,
                     "mappings": [],
                     "min": 0,
                     "thresholds": {
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": 0
                             },
                             {
                                 "color": "red",
@@ -316,7 +343,7 @@
                     "sort": "none"
                 }
             },
-            "pluginVersion": "12.0.2",
+            "pluginVersion": "12.1.0",
             "targets": [
                 {
                     "datasource": {
@@ -326,14 +353,14 @@
                     "disableTextWrap": false,
                     "editorMode": "code",
                     "exemplar": false,
-                    "expr": "max by(namespace) (\n  max_over_time(\n    rate(container_cpu_usage_seconds_total{\n      namespace=~\"$namespace\", \n      image!=\"\", \n      container!=\"\",\n      container!=\"kc-infra-costmanagement-agent-network-costs\",\n      pod!=\"\"\n    }[5m])[10m:]\n  )\n)\n",
+                    "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container!=\"\", \n    container!~\".*network.*\", \n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
                     "fullMetaSearch": false,
                     "includeNullMetadata": true,
                     "instant": false,
-                    "interval": "10m",
+                    "interval": "",
                     "legendFormat": "{{namespace}}",
                     "range": true,
-                    "refId": "memory",
+                    "refId": "cpu",
                     "useBackend": false
                 },
                 {
@@ -344,7 +371,7 @@
                     "editorMode": "code",
                     "exemplar": false,
                     "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\"}[1h])) \n>0",
-                    "hide": false,
+                    "hide": true,
                     "instant": false,
                     "interval": "1h",
                     "legendFormat": "{{namespace}} restarts",
@@ -352,7 +379,101 @@
                     "refId": "restarts"
                 }
             ],
-            "title": "Namespace CPU Usage",
+            "title": "Namespace CPU Usage (millicores)",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
+                    "unit": "bytes"
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 9,
+                "w": 24,
+                "x": 0,
+                "y": 20
+            },
+            "id": 4,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "right",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "hideZeros": false,
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "12.1.0",
+            "targets": [
+                {
+                    "editorMode": "code",
+                    "expr": "sum(kubelet_volume_stats_available_bytes{namespace=~\"$namespace\"}) \nby (namespace,persistentvolumeclaim)",
+                    "legendFormat": "{{namespace}}/{{persistentvolumeclaim}}",
+                    "range": true,
+                    "refId": "A"
+                }
+            ],
+            "title": "PVC Usage",
             "type": "timeseries"
         }
     ],
@@ -412,12 +533,12 @@
         ]
     },
     "time": {
-        "from": "now-7d",
+        "from": "now-30d",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
     "title": "agent resources",
     "uid": "agent-resources-jesse-1",
-    "version": 3
+    "version": 1
 }
