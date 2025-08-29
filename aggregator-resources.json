@@ -19,7 +19,7 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 95,
+    "id": 2,
     "links": [],
     "panels": [
         {
@@ -86,7 +86,8 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": 0
                             },
                             {
                                 "color": "red",
@@ -155,7 +156,7 @@
                     "sort": "none"
                 }
             },
-            "pluginVersion": "12.0.2",
+            "pluginVersion": "12.1.0",
             "targets": [
                 {
                     "datasource": {
@@ -165,11 +166,11 @@
                     "disableTextWrap": false,
                     "editorMode": "code",
                     "exemplar": false,
-                    "expr": "max by(namespace, container) \n  (max_over_time\n    (container_memory_working_set_bytes\n      {namespace=~\"$namespace\" ,container=\"aggregator\", image!=\"\", container!=\"\",pod!=\"\"}[10m]\n    )\n  )",
+                    "expr": "max_over_time(\n  (\n    sum by(namespace) (\n      container_memory_working_set_bytes{\n        namespace=~\"$namespace\",\n        image!=\"\",\n        container=\"aggregator\",\n        pod!=\"\"\n      }\n    )\n  )[$__interval:]\n)\n",
                     "fullMetaSearch": false,
                     "includeNullMetadata": true,
                     "instant": false,
-                    "interval": "10m",
+                    "interval": "",
                     "legendFormat": "{{namespace}}",
                     "range": true,
                     "refId": "memory",
@@ -247,7 +248,8 @@
                         "mode": "absolute",
                         "steps": [
                             {
-                                "color": "green"
+                                "color": "green",
+                                "value": 0
                             },
                             {
                                 "color": "red",
@@ -316,7 +318,7 @@
                     "sort": "none"
                 }
             },
-            "pluginVersion": "12.0.2",
+            "pluginVersion": "12.1.0",
             "targets": [
                 {
                     "datasource": {
@@ -326,11 +328,11 @@
                     "disableTextWrap": false,
                     "editorMode": "code",
                     "exemplar": false,
-                    "expr": "max by(namespace, container) (\n  max_over_time(\n    rate(container_cpu_usage_seconds_total{\n      namespace=~\"$namespace\", container=\"aggregator\", image!=\"\", container!=\"\", pod!=\"\"\n    }[5m])[10m:]\n  )\n)\n",
+                    "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container=\"aggregator\",\n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
                     "fullMetaSearch": false,
                     "includeNullMetadata": true,
                     "instant": false,
-                    "interval": "10m",
+                    "interval": "",
                     "legendFormat": "{{namespace}}",
                     "range": true,
                     "refId": "memory",
@@ -344,7 +346,7 @@
                     "editorMode": "code",
                     "exemplar": false,
                     "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\", container=~\"aggregator\"}[1h])) \n>0",
-                    "hide": false,
+                    "hide": true,
                     "instant": false,
                     "interval": "1h",
                     "legendFormat": "{{namespace}} restarts",
@@ -408,12 +410,12 @@
         ]
     },
     "time": {
-        "from": "now-5d",
+        "from": "now-3h",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
     "title": "Aggregator Resources",
     "uid": "aggregator-resources-jesse",
-    "version": 4
+    "version": 5
 }
