@@ -1,421 +1,770 @@
 {
-    "annotations": {
-        "list": [
-            {
-                "builtIn": 1,
-                "datasource": {
-                    "type": "grafana",
-                    "uid": "-- Grafana --"
-                },
-                "enable": true,
-                "hide": true,
-                "iconColor": "rgba(0, 211, 255, 1)",
-                "name": "Annotations & Alerts",
-                "type": "dashboard"
-            }
-        ]
-    },
-    "description": "Dashboard showing memory usage and restart metrics for aggregator containers across namespaces",
-    "editable": true,
-    "fiscalYearStartMonth": 0,
-    "graphTooltip": 0,
-    "id": 2,
-    "links": [],
-    "panels": [
-        {
-            "collapsed": false,
-            "gridPos": {
-                "h": 1,
-                "w": 24,
-                "x": 0,
-                "y": 0
-            },
-            "id": 3,
-            "panels": [],
-            "title": "$namespace",
-            "type": "row"
+    "apiVersion": "dashboard.grafana.app/v2beta1",
+    "kind": "Dashboard",
+    "metadata": {
+        "name": "aggregator-resources",
+        "namespace": "default",
+        "uid": "y9qfxac3ZPLjJqersuns3xbkvDR4Wjjqi9kFE7sj0QYX",
+        "resourceVersion": "1",
+        "generation": 1,
+        "creationTimestamp": "2026-01-13T13:40:30Z",
+        "labels": {
+            "grafana.app/deprecatedInternalID": "51"
         },
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": 3600000,
-                        "lineInterpolation": "linear",
-                        "lineStyle": {
-                            "fill": "solid"
-                        },
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "never",
-                        "spanNulls": false,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "mappings": [],
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": 0
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    },
-                    "unit": "bytes"
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byFrameRefID",
-                            "options": "restarts"
-                        },
-                        "properties": [
-                            {
-                                "id": "custom.drawStyle",
-                                "value": "bars"
-                            },
-                            {
-                                "id": "custom.axisPlacement",
-                                "value": "right"
-                            },
-                            {
-                                "id": "unit",
-                                "value": "none"
-                            },
-                            {
-                                "id": "custom.barWidthFactor",
-                                "value": 0.2
-                            },
-                            {
-                                "id": "custom.fillOpacity",
-                                "value": 100
-                            },
-                            {
-                                "id": "custom.axisSoftMin",
-                                "value": 0
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 10,
-                "w": 24,
-                "x": 0,
-                "y": 1
-            },
-            "id": 1,
-            "options": {
-                "legend": {
-                    "calcs": [
-                        "max"
-                    ],
-                    "displayMode": "table",
-                    "placement": "right",
-                    "showLegend": true,
-                    "sortBy": "Max",
-                    "sortDesc": true
-                },
-                "tooltip": {
-                    "hideZeros": false,
-                    "mode": "single",
-                    "sort": "none"
-                }
-            },
-            "pluginVersion": "12.1.0",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${datasource}"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "code",
-                    "exemplar": false,
-                    "expr": "max_over_time(\n  (\n    sum by(namespace) (\n      container_memory_working_set_bytes{\n        namespace=~\"$namespace\",\n        image!=\"\",\n        container=\"aggregator\",\n        pod!=\"\"\n      }\n    )\n  )[$__interval:]\n)\n",
-                    "fullMetaSearch": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "interval": "",
-                    "legendFormat": "{{namespace}}",
-                    "range": true,
-                    "refId": "memory",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${datasource}"
-                    },
-                    "editorMode": "code",
-                    "exemplar": false,
-                    "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\",container=~\"aggregator\"}[1h])) \n>0",
-                    "hide": false,
-                    "instant": false,
-                    "interval": "1h",
-                    "legendFormat": "{{namespace}} restarts",
-                    "range": true,
-                    "refId": "restarts"
-                }
-            ],
-            "title": "aggregator memory and restarts",
-            "type": "timeseries"
-        },
-        {
-            "datasource": {
-                "type": "prometheus",
-                "uid": "${datasource}"
-            },
-            "fieldConfig": {
-                "defaults": {
-                    "color": {
-                        "mode": "palette-classic"
-                    },
-                    "custom": {
-                        "axisBorderShow": false,
-                        "axisCenteredZero": false,
-                        "axisColorMode": "text",
-                        "axisLabel": "",
-                        "axisPlacement": "auto",
-                        "barAlignment": 0,
-                        "barWidthFactor": 0.6,
-                        "drawStyle": "line",
-                        "fillOpacity": 0,
-                        "gradientMode": "none",
-                        "hideFrom": {
-                            "legend": false,
-                            "tooltip": false,
-                            "viz": false
-                        },
-                        "insertNulls": 3600000,
-                        "lineInterpolation": "linear",
-                        "lineStyle": {
-                            "fill": "solid"
-                        },
-                        "lineWidth": 1,
-                        "pointSize": 5,
-                        "scaleDistribution": {
-                            "type": "linear"
-                        },
-                        "showPoints": "never",
-                        "spanNulls": false,
-                        "stacking": {
-                            "group": "A",
-                            "mode": "none"
-                        },
-                        "thresholdsStyle": {
-                            "mode": "off"
-                        }
-                    },
-                    "decimals": 1,
-                    "mappings": [],
-                    "min": 0,
-                    "thresholds": {
-                        "mode": "absolute",
-                        "steps": [
-                            {
-                                "color": "green",
-                                "value": 0
-                            },
-                            {
-                                "color": "red",
-                                "value": 80
-                            }
-                        ]
-                    },
-                    "unit": "none"
-                },
-                "overrides": [
-                    {
-                        "matcher": {
-                            "id": "byFrameRefID",
-                            "options": "restarts"
-                        },
-                        "properties": [
-                            {
-                                "id": "custom.drawStyle",
-                                "value": "bars"
-                            },
-                            {
-                                "id": "custom.axisPlacement",
-                                "value": "right"
-                            },
-                            {
-                                "id": "unit",
-                                "value": "none"
-                            },
-                            {
-                                "id": "custom.barWidthFactor",
-                                "value": 0.2
-                            },
-                            {
-                                "id": "custom.fillOpacity",
-                                "value": 100
-                            },
-                            {
-                                "id": "custom.axisSoftMin",
-                                "value": 0
-                            }
-                        ]
-                    }
-                ]
-            },
-            "gridPos": {
-                "h": 9,
-                "w": 24,
-                "x": 0,
-                "y": 11
-            },
-            "id": 2,
-            "options": {
-                "legend": {
-                    "calcs": [
-                        "max"
-                    ],
-                    "displayMode": "table",
-                    "placement": "right",
-                    "showLegend": true,
-                    "sortBy": "Max",
-                    "sortDesc": true
-                },
-                "tooltip": {
-                    "hideZeros": false,
-                    "mode": "single",
-                    "sort": "none"
-                }
-            },
-            "pluginVersion": "12.1.0",
-            "targets": [
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${datasource}"
-                    },
-                    "disableTextWrap": false,
-                    "editorMode": "code",
-                    "exemplar": false,
-                    "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container=\"aggregator\",\n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
-                    "fullMetaSearch": false,
-                    "includeNullMetadata": true,
-                    "instant": false,
-                    "interval": "",
-                    "legendFormat": "{{namespace}}",
-                    "range": true,
-                    "refId": "memory",
-                    "useBackend": false
-                },
-                {
-                    "datasource": {
-                        "type": "prometheus",
-                        "uid": "${datasource}"
-                    },
-                    "editorMode": "code",
-                    "exemplar": false,
-                    "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\", container=~\"aggregator\"}[1h])) \n>0",
-                    "hide": true,
-                    "instant": false,
-                    "interval": "1h",
-                    "legendFormat": "{{namespace}} restarts",
-                    "range": true,
-                    "refId": "restarts"
-                }
-            ],
-            "title": "aggregator cpu and restarts",
-            "type": "timeseries"
+        "annotations": {
+            "grafana.app/createdBy": "user:af1cif5qykhkwa",
+            "grafana.app/updatedBy": "user:af1cif5qykhkwa",
+            "grafana.app/updatedTimestamp": "2026-01-13T13:40:30Z"
         }
-    ],
-    "preload": false,
-    "refresh": "1m",
-    "schemaVersion": 41,
-    "tags": [
-        "kubernetes",
-        "kubecost",
-        "aggregator",
-        "memory",
-        "restarts"
-    ],
-    "templating": {
-        "list": [
+    },
+    "spec": {
+        "annotations": [
             {
-                "allowCustomValue": false,
-                "current": {
-                    "text": "Prometheus",
-                    "value": "${datasource}"
-                },
-                "name": "datasource",
-                "options": [],
-                "query": "prometheus",
-                "refresh": 1,
-                "regex": "",
-                "type": "datasource"
+                "kind": "AnnotationQuery",
+                "spec": {
+                    "builtIn": true,
+                    "enable": true,
+                    "hide": true,
+                    "iconColor": "rgba(0, 211, 255, 1)",
+                    "name": "Annotations & Alerts",
+                    "query": {
+                        "datasource": {
+                            "name": "-- Grafana --"
+                        },
+                        "group": "grafana",
+                        "kind": "DataQuery",
+                        "spec": {},
+                        "version": "v0"
+                    }
+                }
+            }
+        ],
+        "cursorSync": "Off",
+        "description": "Dashboard showing memory usage and restart metrics for aggregator containers across namespaces",
+        "editable": true,
+        "elements": {
+            "panel-1": {
+                "kind": "Panel",
+                "spec": {
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "hidden": false,
+                                        "query": {
+                                            "datasource": {
+                                                "name": "${datasource}"
+                                            },
+                                            "group": "prometheus",
+                                            "kind": "DataQuery",
+                                            "spec": {
+                                                "disableTextWrap": false,
+                                                "editorMode": "code",
+                                                "exemplar": false,
+                                                "expr": "max_over_time(\n  (\n    sum by(namespace) (\n      container_memory_working_set_bytes{\n        namespace=~\"$namespace\",\n        image!=\"\",\n        container=\"aggregator\",\n        pod!=\"\"\n      }\n    )\n  )[$__interval:]\n)\n",
+                                                "fullMetaSearch": false,
+                                                "includeNullMetadata": true,
+                                                "instant": false,
+                                                "interval": "",
+                                                "legendFormat": "{{namespace}}",
+                                                "range": true,
+                                                "useBackend": false
+                                            },
+                                            "version": "v0"
+                                        },
+                                        "refId": "memory"
+                                    }
+                                },
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "hidden": false,
+                                        "query": {
+                                            "datasource": {
+                                                "name": "${datasource}"
+                                            },
+                                            "group": "prometheus",
+                                            "kind": "DataQuery",
+                                            "spec": {
+                                                "editorMode": "code",
+                                                "exemplar": false,
+                                                "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\",container=~\"aggregator\"}[1h])) \n>0",
+                                                "instant": false,
+                                                "interval": "1h",
+                                                "legendFormat": "{{namespace}} restarts",
+                                                "range": true
+                                            },
+                                            "version": "v0"
+                                        },
+                                        "refId": "restarts"
+                                    }
+                                }
+                            ],
+                            "queryOptions": {},
+                            "transformations": []
+                        }
+                    },
+                    "description": "",
+                    "id": 1,
+                    "links": [],
+                    "title": "aggregator memory and restarts",
+                    "vizConfig": {
+                        "group": "timeseries",
+                        "kind": "VizConfig",
+                        "spec": {
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "palette-classic"
+                                    },
+                                    "custom": {
+                                        "axisBorderShow": false,
+                                        "axisCenteredZero": false,
+                                        "axisColorMode": "text",
+                                        "axisLabel": "",
+                                        "axisPlacement": "auto",
+                                        "barAlignment": 0,
+                                        "barWidthFactor": 0.6,
+                                        "drawStyle": "line",
+                                        "fillOpacity": 0,
+                                        "gradientMode": "none",
+                                        "hideFrom": {
+                                            "legend": false,
+                                            "tooltip": false,
+                                            "viz": false
+                                        },
+                                        "insertNulls": 3600000,
+                                        "lineInterpolation": "linear",
+                                        "lineStyle": {
+                                            "fill": "solid"
+                                        },
+                                        "lineWidth": 1,
+                                        "pointSize": 5,
+                                        "scaleDistribution": {
+                                            "type": "linear"
+                                        },
+                                        "showPoints": "never",
+                                        "showValues": false,
+                                        "spanNulls": false,
+                                        "stacking": {
+                                            "group": "A",
+                                            "mode": "none"
+                                        },
+                                        "thresholdsStyle": {
+                                            "mode": "off"
+                                        }
+                                    },
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": 0
+                                            },
+                                            {
+                                                "color": "red",
+                                                "value": 80
+                                            }
+                                        ]
+                                    },
+                                    "unit": "bytes"
+                                },
+                                "overrides": [
+                                    {
+                                        "matcher": {
+                                            "id": "byFrameRefID",
+                                            "options": "restarts"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.drawStyle",
+                                                "value": "bars"
+                                            },
+                                            {
+                                                "id": "custom.axisPlacement",
+                                                "value": "right"
+                                            },
+                                            {
+                                                "id": "unit",
+                                                "value": "none"
+                                            },
+                                            {
+                                                "id": "custom.barWidthFactor",
+                                                "value": 0.2
+                                            },
+                                            {
+                                                "id": "custom.fillOpacity",
+                                                "value": 100
+                                            },
+                                            {
+                                                "id": "custom.axisSoftMin",
+                                                "value": 0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "options": {
+                                "legend": {
+                                    "calcs": [
+                                        "max"
+                                    ],
+                                    "displayMode": "table",
+                                    "placement": "right",
+                                    "showLegend": true,
+                                    "sortBy": "Max",
+                                    "sortDesc": true
+                                },
+                                "tooltip": {
+                                    "hideZeros": false,
+                                    "mode": "single",
+                                    "sort": "none"
+                                }
+                            }
+                        },
+                        "version": "12.3.0"
+                    }
+                }
+            },
+            "panel-2": {
+                "kind": "Panel",
+                "spec": {
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "hidden": false,
+                                        "query": {
+                                            "datasource": {
+                                                "name": "${datasource}"
+                                            },
+                                            "group": "prometheus",
+                                            "kind": "DataQuery",
+                                            "spec": {
+                                                "disableTextWrap": false,
+                                                "editorMode": "code",
+                                                "exemplar": false,
+                                                "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container=\"aggregator\",\n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
+                                                "fullMetaSearch": false,
+                                                "includeNullMetadata": true,
+                                                "instant": false,
+                                                "interval": "",
+                                                "legendFormat": "{{namespace}}",
+                                                "range": true,
+                                                "useBackend": false
+                                            },
+                                            "version": "v0"
+                                        },
+                                        "refId": "memory"
+                                    }
+                                },
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "hidden": true,
+                                        "query": {
+                                            "datasource": {
+                                                "name": "${datasource}"
+                                            },
+                                            "group": "prometheus",
+                                            "kind": "DataQuery",
+                                            "spec": {
+                                                "editorMode": "code",
+                                                "exemplar": false,
+                                                "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\", container=~\"aggregator\"}[1h])) \n>0",
+                                                "instant": false,
+                                                "interval": "1h",
+                                                "legendFormat": "{{namespace}} restarts",
+                                                "range": true
+                                            },
+                                            "version": "v0"
+                                        },
+                                        "refId": "restarts"
+                                    }
+                                }
+                            ],
+                            "queryOptions": {},
+                            "transformations": []
+                        }
+                    },
+                    "description": "",
+                    "id": 2,
+                    "links": [],
+                    "title": "aggregator cpu and restarts",
+                    "vizConfig": {
+                        "group": "timeseries",
+                        "kind": "VizConfig",
+                        "spec": {
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "palette-classic"
+                                    },
+                                    "custom": {
+                                        "axisBorderShow": false,
+                                        "axisCenteredZero": false,
+                                        "axisColorMode": "text",
+                                        "axisLabel": "",
+                                        "axisPlacement": "auto",
+                                        "barAlignment": 0,
+                                        "barWidthFactor": 0.6,
+                                        "drawStyle": "line",
+                                        "fillOpacity": 0,
+                                        "gradientMode": "none",
+                                        "hideFrom": {
+                                            "legend": false,
+                                            "tooltip": false,
+                                            "viz": false
+                                        },
+                                        "insertNulls": 3600000,
+                                        "lineInterpolation": "linear",
+                                        "lineStyle": {
+                                            "fill": "solid"
+                                        },
+                                        "lineWidth": 1,
+                                        "pointSize": 5,
+                                        "scaleDistribution": {
+                                            "type": "linear"
+                                        },
+                                        "showPoints": "never",
+                                        "showValues": false,
+                                        "spanNulls": false,
+                                        "stacking": {
+                                            "group": "A",
+                                            "mode": "none"
+                                        },
+                                        "thresholdsStyle": {
+                                            "mode": "off"
+                                        }
+                                    },
+                                    "decimals": 1,
+                                    "min": 0,
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": 0
+                                            },
+                                            {
+                                                "color": "red",
+                                                "value": 80
+                                            }
+                                        ]
+                                    },
+                                    "unit": "none"
+                                },
+                                "overrides": [
+                                    {
+                                        "matcher": {
+                                            "id": "byFrameRefID",
+                                            "options": "restarts"
+                                        },
+                                        "properties": [
+                                            {
+                                                "id": "custom.drawStyle",
+                                                "value": "bars"
+                                            },
+                                            {
+                                                "id": "custom.axisPlacement",
+                                                "value": "right"
+                                            },
+                                            {
+                                                "id": "unit",
+                                                "value": "none"
+                                            },
+                                            {
+                                                "id": "custom.barWidthFactor",
+                                                "value": 0.2
+                                            },
+                                            {
+                                                "id": "custom.fillOpacity",
+                                                "value": 100
+                                            },
+                                            {
+                                                "id": "custom.axisSoftMin",
+                                                "value": 0
+                                            }
+                                        ]
+                                    }
+                                ]
+                            },
+                            "options": {
+                                "legend": {
+                                    "calcs": [
+                                        "max"
+                                    ],
+                                    "displayMode": "table",
+                                    "placement": "right",
+                                    "showLegend": true,
+                                    "sortBy": "Max",
+                                    "sortDesc": true
+                                },
+                                "tooltip": {
+                                    "hideZeros": false,
+                                    "mode": "single",
+                                    "sort": "none"
+                                }
+                            }
+                        },
+                        "version": "12.3.0"
+                    }
+                }
+            },
+            "panel-4": {
+                "kind": "Panel",
+                "spec": {
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "hidden": false,
+                                        "query": {
+                                            "datasource": {
+                                                "name": "prometheus"
+                                            },
+                                            "group": "prometheus",
+                                            "kind": "DataQuery",
+                                            "spec": {
+                                                "editorMode": "code",
+                                                "expr": "sum(\n    sum_over_time(\n        (changes(ClickHouseProfileEvents_MemoryOvercommitWaitTimeMicroseconds[5m]) \n    > bool 0)[24h:5m])) \nby (namespace, pod,container)",
+                                                "legendFormat": "{{pod}}",
+                                                "range": true
+                                            },
+                                            "version": "v0"
+                                        },
+                                        "refId": "memoryOverCommit"
+                                    }
+                                }
+                            ],
+                            "queryOptions": {},
+                            "transformations": []
+                        }
+                    },
+                    "description": "",
+                    "id": 4,
+                    "links": [],
+                    "title": "memoryOverCommit",
+                    "vizConfig": {
+                        "group": "timeseries",
+                        "kind": "VizConfig",
+                        "spec": {
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "palette-classic"
+                                    },
+                                    "custom": {
+                                        "axisBorderShow": false,
+                                        "axisCenteredZero": false,
+                                        "axisColorMode": "text",
+                                        "axisLabel": "",
+                                        "axisPlacement": "auto",
+                                        "barAlignment": 0,
+                                        "barWidthFactor": 0.6,
+                                        "drawStyle": "line",
+                                        "fillOpacity": 0,
+                                        "gradientMode": "none",
+                                        "hideFrom": {
+                                            "legend": false,
+                                            "tooltip": false,
+                                            "viz": false
+                                        },
+                                        "insertNulls": false,
+                                        "lineInterpolation": "linear",
+                                        "lineWidth": 1,
+                                        "pointSize": 5,
+                                        "scaleDistribution": {
+                                            "type": "linear"
+                                        },
+                                        "showPoints": "auto",
+                                        "showValues": false,
+                                        "spanNulls": false,
+                                        "stacking": {
+                                            "group": "A",
+                                            "mode": "none"
+                                        },
+                                        "thresholdsStyle": {
+                                            "mode": "off"
+                                        }
+                                    },
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": 0
+                                            },
+                                            {
+                                                "color": "red",
+                                                "value": 80
+                                            }
+                                        ]
+                                    }
+                                },
+                                "overrides": []
+                            },
+                            "options": {
+                                "legend": {
+                                    "calcs": [],
+                                    "displayMode": "list",
+                                    "placement": "bottom",
+                                    "showLegend": true
+                                },
+                                "tooltip": {
+                                    "hideZeros": false,
+                                    "mode": "single",
+                                    "sort": "none"
+                                }
+                            }
+                        },
+                        "version": "12.3.0"
+                    }
+                }
+            },
+            "panel-5": {
+                "kind": "Panel",
+                "spec": {
+                    "data": {
+                        "kind": "QueryGroup",
+                        "spec": {
+                            "queries": [
+                                {
+                                    "kind": "PanelQuery",
+                                    "spec": {
+                                        "hidden": false,
+                                        "query": {
+                                            "datasource": {
+                                                "name": "prometheus"
+                                            },
+                                            "group": "prometheus",
+                                            "kind": "DataQuery",
+                                            "spec": {
+                                                "editorMode": "code",
+                                                "expr": "sum(kubecost_read_db_size) by (namespace,fsmCurrent,version)",
+                                                "legendFormat": "__auto",
+                                                "range": true
+                                            },
+                                            "version": "v0"
+                                        },
+                                        "refId": "A"
+                                    }
+                                }
+                            ],
+                            "queryOptions": {},
+                            "transformations": []
+                        }
+                    },
+                    "description": "",
+                    "id": 5,
+                    "links": [],
+                    "title": "db size",
+                    "vizConfig": {
+                        "group": "timeseries",
+                        "kind": "VizConfig",
+                        "spec": {
+                            "fieldConfig": {
+                                "defaults": {
+                                    "color": {
+                                        "mode": "palette-classic"
+                                    },
+                                    "custom": {
+                                        "axisBorderShow": false,
+                                        "axisCenteredZero": false,
+                                        "axisColorMode": "text",
+                                        "axisLabel": "",
+                                        "axisPlacement": "auto",
+                                        "barAlignment": 0,
+                                        "barWidthFactor": 0.6,
+                                        "drawStyle": "line",
+                                        "fillOpacity": 0,
+                                        "gradientMode": "none",
+                                        "hideFrom": {
+                                            "legend": false,
+                                            "tooltip": false,
+                                            "viz": false
+                                        },
+                                        "insertNulls": false,
+                                        "lineInterpolation": "linear",
+                                        "lineWidth": 1,
+                                        "pointSize": 5,
+                                        "scaleDistribution": {
+                                            "type": "linear"
+                                        },
+                                        "showPoints": "auto",
+                                        "showValues": false,
+                                        "spanNulls": false,
+                                        "stacking": {
+                                            "group": "A",
+                                            "mode": "none"
+                                        },
+                                        "thresholdsStyle": {
+                                            "mode": "off"
+                                        }
+                                    },
+                                    "thresholds": {
+                                        "mode": "absolute",
+                                        "steps": [
+                                            {
+                                                "color": "green",
+                                                "value": 0
+                                            },
+                                            {
+                                                "color": "red",
+                                                "value": 80
+                                            }
+                                        ]
+                                    },
+                                    "unit": "bytes"
+                                },
+                                "overrides": []
+                            },
+                            "options": {
+                                "legend": {
+                                    "calcs": [],
+                                    "displayMode": "list",
+                                    "placement": "bottom",
+                                    "showLegend": true
+                                },
+                                "tooltip": {
+                                    "hideZeros": false,
+                                    "mode": "single",
+                                    "sort": "none"
+                                }
+                            }
+                        },
+                        "version": "12.3.0"
+                    }
+                }
+            }
+        },
+        "layout": {
+            "kind": "GridLayout",
+            "spec": {
+                "items": [
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-4"
+                            },
+                            "height": 8,
+                            "width": 12,
+                            "x": 0,
+                            "y": 0
+                        }
+                    },
+                    {
+                        "kind": "GridLayoutItem",
+                        "spec": {
+                            "element": {
+                                "kind": "ElementReference",
+                                "name": "panel-5"
+                            },
+                            "height": 8,
+                            "width": 12,
+                            "x": 12,
+                            "y": 0
+                        }
+                    }
+                ]
+            }
+        },
+        "links": [],
+        "liveNow": false,
+        "preload": false,
+        "tags": [
+            "kubernetes",
+            "kubecost",
+            "aggregator",
+            "memory",
+            "restarts"
+        ],
+        "timeSettings": {
+            "autoRefresh": "1m",
+            "autoRefreshIntervals": [
+                "5s",
+                "10s",
+                "30s",
+                "1m",
+                "5m",
+                "15m",
+                "30m",
+                "1h",
+                "2h",
+                "1d"
+            ],
+            "fiscalYearStartMonth": 0,
+            "from": "now-3h",
+            "hideTimepicker": false,
+            "timezone": "browser",
+            "to": "now"
+        },
+        "title": "Aggregator Resources2",
+        "variables": [
+            {
+                "kind": "DatasourceVariable",
+                "spec": {
+                    "allowCustomValue": false,
+                    "current": {
+                        "text": "Prometheus",
+                        "value": "prometheus"
+                    },
+                    "hide": "dontHide",
+                    "includeAll": false,
+                    "multi": false,
+                    "name": "datasource",
+                    "options": [],
+                    "pluginId": "prometheus",
+                    "refresh": "onDashboardLoad",
+                    "regex": "",
+                    "skipUrlSync": false
+                }
             },
             {
-                "allowCustomValue": false,
-                "current": {
-                    "text": "All",
-                    "value": [
-                        "$__all"
-                    ]
-                },
-                "definition": "label_values(container_memory_working_set_bytes{container=\"aggregator\"},namespace)",
-                "description": "",
-                "includeAll": true,
-                "multi": true,
-                "name": "namespace",
-                "options": [],
-                "query": {
-                    "qryType": 1,
-                    "query": "label_values(container_memory_working_set_bytes{container=\"aggregator\"},namespace)",
-                    "refId": "PrometheusVariableQueryEditor-VariableQuery"
-                },
-                "refresh": 1,
-                "regex": "",
-                "sort": 5,
-                "type": "query"
+                "kind": "QueryVariable",
+                "spec": {
+                    "allowCustomValue": false,
+                    "current": {
+                        "text": "All",
+                        "value": [
+                            "$__all"
+                        ]
+                    },
+                    "definition": "label_values(container_memory_working_set_bytes{container=\"aggregator\"},namespace)",
+                    "description": "",
+                    "hide": "dontHide",
+                    "includeAll": true,
+                    "multi": true,
+                    "name": "namespace",
+                    "options": [],
+                    "query": {
+                        "group": "prometheus",
+                        "kind": "DataQuery",
+                        "spec": {
+                            "qryType": 1,
+                            "query": "label_values(container_memory_working_set_bytes{container=\"aggregator\"},namespace)",
+                            "refId": "PrometheusVariableQueryEditor-VariableQuery"
+                        },
+                        "version": "v0"
+                    },
+                    "refresh": "onDashboardLoad",
+                    "regex": "",
+                    "skipUrlSync": false,
+                    "sort": "disabled"
+                }
             }
         ]
     },
-    "time": {
-        "from": "now-3h",
-        "to": "now"
-    },
-    "timepicker": {},
-    "timezone": "browser",
-    "title": "Aggregator Resources",
-    "uid": "aggregator-resources-jesse",
-    "version": 5
+    "status": {}
 }
