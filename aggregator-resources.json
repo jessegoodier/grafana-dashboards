@@ -80,6 +80,137 @@
                             }
                         ]
                     },
+                    "unit": "bytes"
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": ".*%"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.axisPlacement",
+                                "value": "right"
+                            },
+                            {
+                                "id": "unit",
+                                "value": "percent"
+                            },
+                            {
+                                "id": "max",
+                                "value": 100
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 0,
+                "y": 0
+            },
+            "id": 8,
+            "options": {
+                "legend": {
+                    "calcs": [
+                        "last"
+                    ],
+                    "displayMode": "list",
+                    "placement": "right",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "hideZeros": false,
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "12.3.1",
+            "targets": [
+                {
+                    "editorMode": "code",
+                    "expr": "\nsum by (namespace, persistentvolumeclaim) (\n  kubelet_volume_stats_used_bytes{namespace=~\"$namespace\"}\n) \n",
+                    "legendFormat": "{{namespace}}/{{persistentvolumeclaim}}",
+                    "range": true,
+                    "refId": "used"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "\n100 *\nsum by (namespace, persistentvolumeclaim) (\n  kubelet_volume_stats_used_bytes{namespace=~\"$namespace\"}\n)\n/\nclamp_min(\n  sum by (namespace, persistentvolumeclaim) (\n    kubelet_volume_stats_capacity_bytes{namespace=~\"$namespace\"}\n  ),\n  1\n)\n",
+                    "hide": false,
+                    "instant": false,
+                    "legendFormat": "{{namespace}}/{{persistentvolumeclaim}} used%",
+                    "range": true,
+                    "refId": "usedPercent"
+                }
+            ],
+            "title": "storage",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "showValues": false,
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    },
                     "unit": "binBps"
                 },
                 "overrides": []
@@ -87,7 +218,7 @@
             "gridPos": {
                 "h": 8,
                 "w": 12,
-                "x": 0,
+                "x": 12,
                 "y": 0
             },
             "id": 7,
@@ -174,22 +305,23 @@
                                 "value": 80
                             }
                         ]
-                    }
+                    },
+                    "unit": "none"
                 },
                 "overrides": []
             },
             "gridPos": {
                 "h": 8,
                 "w": 12,
-                "x": 12,
-                "y": 0
+                "x": 0,
+                "y": 8
             },
-            "id": 6,
+            "id": 9,
             "options": {
                 "legend": {
                     "calcs": [],
                     "displayMode": "list",
-                    "placement": "bottom",
+                    "placement": "right",
                     "showLegend": true
                 },
                 "tooltip": {
@@ -202,10 +334,10 @@
             "targets": [
                 {
                     "editorMode": "code",
-                    "expr": "sum(kubecost_errored_allocation_ingestions) by (namespace,pod)",
+                    "expr": "sum  (kubecost_errored_allocation_ingestions{namespace=~\"$namespace\"}) by (namespace, pod)",
                     "legendFormat": "{{pod}}/allocationErrors",
                     "range": true,
-                    "refId": "allocation"
+                    "refId": "allocationErrors"
                 },
                 {
                     "datasource": {
@@ -213,11 +345,11 @@
                         "uid": "prometheus"
                     },
                     "editorMode": "code",
-                    "expr": "sum(kubecost_errored_asset_ingestions) by (namespace,pod)",
+                    "expr": "sum(kubecost_errored_asset_ingestions{namespace=~\"$namespace\"}) by (namespace,pod)",
                     "hide": false,
                     "legendFormat": "{{pod}}/assetErrors",
                     "range": true,
-                    "refId": "assests"
+                    "refId": "assestErrors"
                 },
                 {
                     "datasource": {
@@ -225,11 +357,123 @@
                         "uid": "prometheus"
                     },
                     "editorMode": "code",
-                    "expr": "sum(kubecost_errored_cloud_cost_ingestions) by (namespace,pod)",
+                    "expr": "sum(kubecost_errored_cloud_cost_ingestions{namespace=~\"$namespace\"}) by (namespace,pod)",
                     "hide": false,
                     "legendFormat": "{{pod}}/cloudCostErrors",
                     "range": true,
-                    "refId": "cloudcost"
+                    "refId": "cloudcostErrors"
+                }
+            ],
+            "title": "ingestion errors",
+            "type": "timeseries"
+        },
+        {
+            "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "palette-classic"
+                    },
+                    "custom": {
+                        "axisBorderShow": false,
+                        "axisCenteredZero": false,
+                        "axisColorMode": "text",
+                        "axisLabel": "",
+                        "axisPlacement": "auto",
+                        "barAlignment": 0,
+                        "barWidthFactor": 0.6,
+                        "drawStyle": "line",
+                        "fillOpacity": 0,
+                        "gradientMode": "none",
+                        "hideFrom": {
+                            "legend": false,
+                            "tooltip": false,
+                            "viz": false
+                        },
+                        "insertNulls": false,
+                        "lineInterpolation": "linear",
+                        "lineWidth": 1,
+                        "pointSize": 5,
+                        "scaleDistribution": {
+                            "type": "linear"
+                        },
+                        "showPoints": "auto",
+                        "showValues": false,
+                        "spanNulls": false,
+                        "stacking": {
+                            "group": "A",
+                            "mode": "none"
+                        },
+                        "thresholdsStyle": {
+                            "mode": "off"
+                        }
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": [
+                    {
+                        "matcher": {
+                            "id": "byRegexp",
+                            "options": "/.*Errors/"
+                        },
+                        "properties": [
+                            {
+                                "id": "custom.axisPlacement",
+                                "value": "right"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "gridPos": {
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 8
+            },
+            "id": 6,
+            "options": {
+                "legend": {
+                    "calcs": [],
+                    "displayMode": "list",
+                    "placement": "right",
+                    "showLegend": true
+                },
+                "tooltip": {
+                    "hideZeros": false,
+                    "mode": "single",
+                    "sort": "none"
+                }
+            },
+            "pluginVersion": "12.3.1",
+            "targets": [
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum by(namespace, pod) (rate(kubecost_successful_allocation_ingestions{namespace=~\"$namespace\"}[$__rate_interval]))",
+                    "hide": false,
+                    "legendFormat": "{{pod}}/allocationSuccess",
+                    "range": true,
+                    "refId": "allocationSuccess"
                 },
                 {
                     "datasource": {
@@ -237,14 +481,41 @@
                         "uid": "prometheus"
                     },
                     "editorMode": "code",
-                    "expr": "sum(kubecost_successful_allocation_ingestions) by (namespace,pod)",
+                    "expr": "sum by(namespace, pod) (rate(kubecost_successful_cloud_cost_ingestions{namespace=~\"$namespace\"}[$__rate_interval]))",
                     "hide": false,
-                    "legendFormat": "{{pod}}/allocationSuccess",
+                    "instant": false,
+                    "legendFormat": "{{pod}}/cloudSuccess",
                     "range": true,
-                    "refId": "A"
+                    "refId": "cloudSuccess"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum by(namespace, pod) (rate(kubecost_successful_network_insight_ingestions{namespace=~\"$namespace\"}[$__rate_interval]))",
+                    "hide": false,
+                    "instant": false,
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "refId": "networkSuccess"
+                },
+                {
+                    "datasource": {
+                        "type": "prometheus",
+                        "uid": "prometheus"
+                    },
+                    "editorMode": "code",
+                    "expr": "sum by(namespace, pod) (rate(kubecost_successful_asset_ingestions{namespace=~\"$namespace\"}[$__rate_interval]))",
+                    "hide": false,
+                    "instant": false,
+                    "legendFormat": "__auto",
+                    "range": true,
+                    "refId": "assetSuccess"
                 }
             ],
-            "title": "ingestion",
+            "title": "ingestion success rate",
             "type": "timeseries"
         },
         {
@@ -313,14 +584,14 @@
                 "h": 8,
                 "w": 12,
                 "x": 0,
-                "y": 8
+                "y": 16
             },
             "id": 5,
             "options": {
                 "legend": {
                     "calcs": [],
                     "displayMode": "list",
-                    "placement": "bottom",
+                    "placement": "right",
                     "showLegend": true
                 },
                 "tooltip": {
@@ -333,10 +604,11 @@
             "targets": [
                 {
                     "editorMode": "code",
-                    "expr": "kubecost_read_db_size",
-                    "legendFormat": "{{pod}}/{{fsmCurrent}}",
+                    "expr": "sum(kubecost_read_db_size{namespace=~\"$namespace\"}) by (namespace,pod,fsmCurrent)",
+                    "interval": "",
+                    "legendFormat": "{{namespace}}/{{pod}}-{{fsmCurrent}}",
                     "range": true,
-                    "refId": "A"
+                    "refId": "readdb"
                 }
             ],
             "title": "db size",
@@ -407,7 +679,7 @@
                 "h": 8,
                 "w": 12,
                 "x": 12,
-                "y": 8
+                "y": 16
             },
             "id": 4,
             "options": {
@@ -444,7 +716,7 @@
                 "h": 1,
                 "w": 24,
                 "x": 0,
-                "y": 16
+                "y": 24
             },
             "id": 3,
             "panels": [],
@@ -550,10 +822,10 @@
                 ]
             },
             "gridPos": {
-                "h": 10,
-                "w": 24,
+                "h": 8,
+                "w": 12,
                 "x": 0,
-                "y": 17
+                "y": 25
             },
             "id": 1,
             "options": {
@@ -713,10 +985,10 @@
                 ]
             },
             "gridPos": {
-                "h": 9,
-                "w": 24,
-                "x": 0,
-                "y": 27
+                "h": 8,
+                "w": 12,
+                "x": 12,
+                "y": 25
             },
             "id": 2,
             "options": {
@@ -827,7 +1099,7 @@
     },
     "timepicker": {},
     "timezone": "browser",
-    "title": "Aggregator Resources Copy",
+    "title": "Aggregator Resources",
     "uid": "grnxp4",
-    "version": 3
+    "version": 4
 }
