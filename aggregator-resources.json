@@ -19,7 +19,7 @@
     "editable": true,
     "fiscalYearStartMonth": 0,
     "graphTooltip": 0,
-    "id": 32,
+    "id": 0,
     "links": [],
     "panels": [
         {
@@ -1025,7 +1025,7 @@
             "targets": [
                 {
                     "editorMode": "code",
-                    "expr": "sum(    sum_over_time(\n          (changes(ClickHouseProfileEvents_MemoryOvercommitWaitTimeMicroseconds[5m])   > bool 0)[24h:5m])) \n          by (namespace, pod,container)",
+                    "expr": "sum(    sum_over_time(\n          (changes(ClickHouseProfileEvents_MemoryOvercommitWaitTimeMicroseconds{namespace=~\"$namespace\"}[5m])   > bool 0)[24h:5m])) \n          by (namespace, pod,container)",
                     "legendFormat": "{{pod}}",
                     "range": true,
                     "refId": "A"
@@ -1071,10 +1071,10 @@
                 "allowCustomValue": false,
                 "current": {
                     "text": [
-                        "kc-localstore-cache"
+                        "All"
                     ],
                     "value": [
-                        "kc-localstore-cache"
+                        "$__all"
                     ]
                 },
                 "definition": "label_values(container_memory_working_set_bytes{container=\"aggregator\"},namespace)",
@@ -1096,12 +1096,12 @@
         ]
     },
     "time": {
-        "from": "now-2d",
+        "from": "now-30m",
         "to": "now"
     },
     "timepicker": {},
     "timezone": "browser",
-    "title": "Aggregator Resources5",
+    "title": "Aggregator Resources",
     "uid": "grnxp4s",
-    "version": 5
+    "version": 6
 }
