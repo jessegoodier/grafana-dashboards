@@ -15,11 +15,11 @@
       }
     ]
   },
-  "description": "Dashboard showing memory usage and restart metrics for aggregator containers across namespaces",
+  "description": "Dashboard showing memory usage and restart metrics for containers across namespaces",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -72,6 +72,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -149,7 +150,7 @@
                 "id": "custom.hideFrom",
                 "value": {
                   "legend": false,
-                  "tooltip": false,
+                  "tooltip": true,
                   "viz": true
                 }
               }
@@ -181,7 +182,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.0",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
@@ -257,6 +258,7 @@
               "type": "linear"
             },
             "showPoints": "never",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -343,7 +345,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.0",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "datasource": {
@@ -416,6 +418,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -463,7 +466,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.1.0",
+      "pluginVersion": "12.3.1",
       "targets": [
         {
           "editorMode": "code",
@@ -479,11 +482,10 @@
   ],
   "preload": false,
   "refresh": "1m",
-  "schemaVersion": 41,
+  "schemaVersion": 42,
   "tags": [
     "kubernetes",
     "kubecost",
-    "aggregator",
     "memory",
     "restarts"
   ],
@@ -504,16 +506,6 @@
       },
       {
         "allowCustomValue": false,
-        "current": {
-          "text": [
-            "ibm-finops-agent",
-            "infra-costmanagement"
-          ],
-          "value": [
-            "ibm-finops-agent",
-            "infra-costmanagement"
-          ]
-        },
         "definition": "label_values(container_memory_working_set_bytes,namespace)",
         "description": "",
         "includeAll": true,
@@ -533,7 +525,7 @@
     ]
   },
   "time": {
-    "from": "now-30d",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
