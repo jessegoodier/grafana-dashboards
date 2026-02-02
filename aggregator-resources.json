@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
+  "id": 32,
   "links": [],
   "panels": [
     {
@@ -154,7 +154,7 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "max_over_time(\n  (\n    sum by(namespace) (\n      container_memory_working_set_bytes{\n        namespace=~\"$namespace\",\n        image!=\"\",\n        container=\"aggregator\",\n        pod!=\"\"\n      }\n    )\n  )[$__interval:]\n)\n",
+          "expr": "max_over_time(\n  (\n    sum by(namespace) (\n      container_memory_working_set_bytes{\n        namespace=~\"$namespace\",\n        image!=\"\",\n        container=~\"aggregator|checker\",\n        pod!=\"\"\n      }\n    )\n  )[$__interval:]\n)\n",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -317,7 +317,7 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container=\"aggregator\",\n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
+          "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container=~\"aggregator|checker\",\n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1096,12 +1096,12 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Aggregator Resources",
   "uid": "grnxp4s",
-  "version": 6
+  "version": 8
 }
