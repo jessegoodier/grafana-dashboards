@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 32,
+  "id": 0,
   "links": [],
   "panels": [
     {
@@ -154,12 +154,12 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "max_over_time(\n  (\n    sum by(namespace) (\n      container_memory_working_set_bytes{\n        namespace=~\"$namespace\",\n        image!=\"\",\n        container=~\"aggregator|checker\",\n        pod!=\"\"\n      }\n    )\n  )[$__interval:]\n)\n",
+          "expr": "max_over_time(\n  (\n    sum by(namespace,container) (\n      container_memory_working_set_bytes{\n        namespace=~\"$namespace\",\n        image!=\"\",\n        container=~\"aggregator|checker\",\n        pod!=\"\"\n      }\n    )\n  )[$__interval:]\n)\n",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
           "interval": "",
-          "legendFormat": "{{namespace}}",
+          "legendFormat": "{{namespace}}/{{container}}",
           "range": true,
           "refId": "memory",
           "useBackend": false
@@ -171,11 +171,11 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\",container=~\"aggregator\"}[1h])) \n>0",
+          "expr": "sum by (namespace,container) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\",container=~\"aggregator|checker\"}[1h])) \n>0",
           "hide": false,
           "instant": false,
           "interval": "1h",
-          "legendFormat": "{{namespace}} restarts",
+          "legendFormat": "{{namespace}}/{{container}} restarts",
           "range": true,
           "refId": "restarts"
         }
@@ -317,12 +317,12 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container=~\"aggregator|checker\",\n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
+          "expr": "sum by(namespace,container) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container=~\"aggregator|checker\",\n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
           "interval": "",
-          "legendFormat": "{{namespace}}",
+          "legendFormat": "{{namespace}}/{{container}}",
           "range": true,
           "refId": "memory",
           "useBackend": false
@@ -1103,5 +1103,5 @@
   "timezone": "browser",
   "title": "Aggregator Resources",
   "uid": "grnxp4s",
-  "version": 8
+  "version": 9
 }
