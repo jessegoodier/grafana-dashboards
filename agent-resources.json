@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -130,31 +130,6 @@
                 "value": 0
               }
             ]
-          },
-          {
-            "__systemRef": "hideSeriesFrom",
-            "matcher": {
-              "id": "byNames",
-              "options": {
-                "mode": "exclude",
-                "names": [
-                  "ibm-finops-agent",
-                  "infra-costmanagement"
-                ],
-                "prefix": "All except:",
-                "readOnly": true
-              }
-            },
-            "properties": [
-              {
-                "id": "custom.hideFrom",
-                "value": {
-                  "legend": false,
-                  "tooltip": true,
-                  "viz": true
-                }
-              }
-            ]
           }
         ]
       },
@@ -173,8 +148,8 @@
           "displayMode": "table",
           "placement": "right",
           "showLegend": true,
-          "sortBy": "Name",
-          "sortDesc": false
+          "sortBy": "Max",
+          "sortDesc": true
         },
         "tooltip": {
           "hideZeros": false,
@@ -192,12 +167,12 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "max_over_time(\n  (\n    sum by(namespace) (\n      container_memory_working_set_bytes{\n        namespace=~\"$namespace\",\n        image!=\"\",\n        container!=\"\",\n        container!~\".*network.*\",\n        pod!=\"\"\n      }\n    )\n  )[$__interval:]\n)\n",
+          "expr": "sum by(namespace, image) (container_memory_working_set_bytes{namespace=~\"$namespace\", image!=\"\", container!=\"\", container=\"finops-agent\", pod!=\"\"})",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
           "interval": "",
-          "legendFormat": "{{namespace}}",
+          "legendFormat": "{{namespace}}-{{image}}",
           "range": true,
           "refId": "memory",
           "useBackend": false
@@ -355,7 +330,7 @@
           "disableTextWrap": false,
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container!=\"\", \n    container!~\".*network.*\", \n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
+          "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container=\"finops-agent\",\n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -372,7 +347,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\"}[1h])) \n>0",
+          "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\",pod=~\".+finopsagent.+\"}[1h])) \n>0",
           "hide": true,
           "instant": false,
           "interval": "1h",
@@ -470,7 +445,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "sum(kubelet_volume_stats_available_bytes{namespace=~\"$namespace\"}) \nby (namespace,persistentvolumeclaim)",
+          "expr": "sum(kubelet_volume_stats_available_bytes{namespace=~\"$namespace\",persistentvolumeclaim=~\".+-finopsagent\"}) \nby (namespace,persistentvolumeclaim)",
           "legendFormat": "{{namespace}}/{{persistentvolumeclaim}}",
           "range": true,
           "refId": "A"
@@ -532,5 +507,5 @@
   "timezone": "browser",
   "title": "agent resources",
   "uid": "agent-resources-jesse-1",
-  "version": 1
+  "version": 2
 }
