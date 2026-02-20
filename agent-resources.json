@@ -19,7 +19,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 0,
   "links": [],
   "panels": [
     {
@@ -146,7 +146,7 @@
             "max"
           ],
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "showLegend": true,
           "sortBy": "Max",
           "sortDesc": true
@@ -157,7 +157,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -172,7 +172,7 @@
           "includeNullMetadata": true,
           "instant": false,
           "interval": "",
-          "legendFormat": "{{namespace}}-{{image}}",
+          "legendFormat": "{{image}}",
           "range": true,
           "refId": "memory",
           "useBackend": false
@@ -309,9 +309,9 @@
             "mean"
           ],
           "displayMode": "table",
-          "placement": "right",
+          "placement": "bottom",
           "showLegend": true,
-          "sortBy": "Max",
+          "sortBy": "Name",
           "sortDesc": true
         },
         "tooltip": {
@@ -320,7 +320,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "datasource": {
@@ -328,14 +328,14 @@
             "uid": "${datasource}"
           },
           "disableTextWrap": false,
-          "editorMode": "code",
+          "editorMode": "builder",
           "exemplar": false,
-          "expr": "sum by(namespace) (\n  rate(container_cpu_usage_seconds_total{\n    namespace=~\"$namespace\", \n    image!=\"\", \n    container=\"finops-agent\",\n    pod!=\"\"\n  }[$__rate_interval])\n)\n",
+          "expr": "sum by(image) (irate(container_cpu_usage_seconds_total{namespace=~\"$namespace\", image!=\"\", container=\"finops-agent\", pod!=\"\"}[$__interval]))",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
           "interval": "",
-          "legendFormat": "{{namespace}}",
+          "legendFormat": "{{image}}",
           "range": true,
           "refId": "cpu",
           "useBackend": false
@@ -348,7 +348,7 @@
           "editorMode": "code",
           "exemplar": false,
           "expr": "sum by (namespace) \n  (increase(kube_pod_container_status_restarts_total\n  {namespace=~\"$namespace\",pod=~\".+finopsagent.+\"}[1h])) \n>0",
-          "hide": true,
+          "hide": false,
           "instant": false,
           "interval": "1h",
           "legendFormat": "{{namespace}} restarts",
@@ -356,7 +356,7 @@
           "refId": "restarts"
         }
       ],
-      "title": "Namespace CPU Usage (millicores)",
+      "title": "Namespace CPU Usage",
       "type": "timeseries"
     },
     {
@@ -441,7 +441,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.3",
       "targets": [
         {
           "editorMode": "code",
@@ -481,6 +481,14 @@
       },
       {
         "allowCustomValue": false,
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
         "definition": "label_values(container_memory_working_set_bytes,namespace)",
         "description": "",
         "includeAll": true,
@@ -500,7 +508,7 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {},
